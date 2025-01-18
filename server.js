@@ -1,16 +1,37 @@
 // server.js
 import dotenv from 'dotenv'; // Load environment variables
 import express from 'express';
-import bodyParser from 'body-parser';
+import session from 'express-session';
+import bodyParser from 'body-parser'; // To parse incoming request bodies
+import passport from './passport-config.js'; // The file where you set up passport
+import cookieParser from 'cookie-parser';
+
 import userRoutes from './routes/userRoutes.js'; // Use .js extension for local imports
+import authRoutes from './routes/authRoutes.js'; // Import the authentication routes
 
 dotenv.config(); // Initialize environment variables
 
 const app = express();
 const PORT = 3000;
 
-// Middleware
-app.use(bodyParser.json()); // Parse incoming JSON requests
+// Middleware to parse incoming JSON requests
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Middleware to parse cookies
+app.use(cookieParser());
+
+// Set up session handling
+app.use(session({
+    secret: process.env.SESSION_SECRET, // Secret key for session encryption from .env
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Set to true if using https (recommended in production)
+}));
+
+// Initialize passport and use sessions
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Define a basic route
 app.get('/', (req, res) => {
@@ -19,6 +40,9 @@ app.get('/', (req, res) => {
 
 // Register routes
 app.use('/api', userRoutes); // Prefix all routes with `/api`
+
+// Use the authentication routes
+app.use('/api', authRoutes); // All routes in authRoutes will be prefixed with /api
 
 // Start the server
 app.listen(PORT, () => {
