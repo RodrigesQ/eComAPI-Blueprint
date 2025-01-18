@@ -1,2 +1,11 @@
+# Ignore the node_modules directory
 node_modules/
+
+# Ignore log files
 *.log
+
+# Ignore the .env file containing sensitive data
+.env
+
+# Swagger Editor if installed globally or locally as a dev dependency
+swagger-editor/

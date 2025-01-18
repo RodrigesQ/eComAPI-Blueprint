@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: E-commerce API
+  description: API documentation for managing users, products, orders, payments, and more in an e-commerce platform.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Local server
+paths:
+  /users:
+    get:
+      summary: Get all users
+      description: Retrieve a list of all users.
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user_id:
+                      type: integer
+                      description: The ID of the user
+                    name:
+                      type: string
+                      description: The name of the user
+                    email:
+                      type: string
+                      description: The email of the user
+                    role:
+                      type: string
+                      description: The role of the user ('customer' or 'admin')
+
+    post:
+      summary: Create a new user
+      description: Create a new user in the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum: ['customer', 'admin']
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Invalid input
+          
+  /products:
+    get:
+      summary: Get all products
+      description: Retrieve a list of all products.
+      responses:
+        '200':
+          description: A list of products.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    product_id:
+                      type: integer
+                      description: The ID of the product
+                    name:
+                      type: string
+                      description: The name of the product
+                    description:
+                      type: string
+                      description: The description of the product
+                    price:
+                      type: number
+                      format: float
+                      description: The price of the product
+                    stock_quantity:
+                      type: integer
+                      description: The available stock quantity
+
+    post:
+      summary: Create a new product
+      description: Create a new product listing.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                  format: float
+                stock_quantity:
+                  type: integer
+                category_id:
+                  type: integer
+      responses:
+        '201':
+          description: Product created successfully
+        '400':
+          description: Invalid input
+
+  # Add similar endpoints for Orders, Categories, Reviews, Payments, etc.
