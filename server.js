@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 
 import userRoutes from './routes/userRoutes.js'; // Use .js extension for local imports
 import authRoutes from './routes/authRoutes.js'; // Import the authentication routes
+import productRoutes from './routes/productRoutes.js'; // Assuming this is where you define your routes
 
 dotenv.config(); // Initialize environment variables
 
@@ -43,6 +44,9 @@ app.use('/api', userRoutes); // Prefix all routes with `/api`
 
 // Use the authentication routes
 app.use('/api', authRoutes); // All routes in authRoutes will be prefixed with /api
+// Use the product routes
+app.use('/api', productRoutes); // Make sure the route prefix is correct
+
 
 // Start the server
 app.listen(PORT, () => {
