@@ -13,9 +13,11 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
     const user = req.user;
 
     // Create a JWT token
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
-        expiresIn: '1h', // Token expires in 1 hour
-    });
+    const token = jwt.sign(
+        { user_id: user.user_id, email: user.email, role: user.role }, // Change `user.id` to `user.user_id`
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    );
 
     // Send the token as a response
     res.json({ message: 'Login successful', token });
@@ -23,49 +25,22 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 
 // Protected route: Dashboard (requires authentication)
 router.get('/dashboard', authenticateJWT, (req, res) => {
+    // req.user is populated by the authenticateJWT middleware
     res.json({ message: 'Welcome to your dashboard!', user: req.user });
 });
 
 // Logout route (if using sessions)
 router.post('/logout', (req, res) => {
+    // Destroy session (if using session-based authentication)
     req.logout((err) => {
         if (err) {
             return res.status(500).json({ message: 'Logout failed' });
         }
         res.status(200).json({ message: 'Logged out successfully' });
     });
+
+    // Alternatively, if using JWT, there is no need to destroy the session. Just inform the user to forget the token.
+    // In case of JWT, you can also handle client-side logout by removing the token on the front end.
 });
 
 export default router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -159,6 +159,38 @@ CREATE TABLE Payments (
     amount DECIMAL NOT NULL
 );
 
+--Add ***********************************************
+-- Create Carts table
+CREATE TABLE Carts (
+    cart_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES Users(user_id) ON DELETE CASCADE,
+    total_amount DECIMAL NOT NULL DEFAULT 0.00
+);
+
+-- Create Cart_Items table
+CREATE TABLE Cart_Items (
+    cart_item_id SERIAL PRIMARY KEY,
+    cart_id INT REFERENCES Carts(cart_id) ON DELETE CASCADE,
+    product_id INT REFERENCES Products(product_id),
+    quantity INT NOT NULL CHECK (quantity > 0),
+    item_price DECIMAL NOT NULL
+);
+
+ALTER TABLE Cart_Items
+ADD CONSTRAINT unique_cart_product UNIQUE (cart_id, product_id);
+
+CREATE TABLE Product_Reservations (
+    reservation_id SERIAL PRIMARY KEY,
+    product_id INT NOT NULL REFERENCES Products(product_id),
+    user_id INT NOT NULL REFERENCES Users(user_id),
+    reserved_until TIMESTAMP NOT NULL,
+    reserved_quantity INT NOT NULL,
+    UNIQUE (product_id, user_id) -- Ensure no duplicate reservations for the same user and product
+);
+
+
+
+
 ```
 
 ```swagger
