@@ -130,16 +130,21 @@ CREATE TABLE Orders (
     order_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES Users(user_id) ON DELETE CASCADE,
     order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    total_amount DECIMAL NOT NULL
+    total_amount DECIMAL NOT NULL CHECK (total_amount >= 0),
+    status VARCHAR(20) NOT NULL DEFAULT 'Pending', -- Added status column
+    shipping_address TEXT, -- Optional metadata for shipping address
+    payment_method VARCHAR(50) -- Optional metadata for payment method
 );
+
 
 -- Create Order_Items table (details of products in orders)
 CREATE TABLE Order_Items (
     order_item_id SERIAL PRIMARY KEY,
     order_id INT REFERENCES Orders(order_id) ON DELETE CASCADE,
     product_id INT REFERENCES Products(product_id),
-    quantity INT NOT NULL,
-    item_price DECIMAL NOT NULL
+    quantity INT NOT NULL CHECK (quantity > 0), -- Added positive quantity constraint
+    item_price DECIMAL NOT NULL CHECK (item_price >= 0), -- Optional check for item price
+    return_quantity INT DEFAULT 0 -- Added return_quantity for handling returns
 );
 
 -- Create Reviews table
